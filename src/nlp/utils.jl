@@ -67,6 +67,30 @@ macro rangecheck(lo, hi, vars...)
   Expr(:block, exprs...)
 end
 
+const UnconstrainedErrorMessage = "Trying to evaluate constraints, but the problem is unconstrained."
+
+function check_constrained(nlp)
+  if unconstrained(nlp)
+    throw(error(UnconstrainedErrorMessage))
+  end
+end
+
+const NonlinearUnconstrainedErrorMessage = "Trying to evaluate nonlinear constraints, but the problem does not have any."
+
+function check_nonlinearly_constrained(nlp)
+  if nlp.meta.nnln == 0
+    throw(error(NonlinearUnconstrainedErrorMessage))
+  end
+end
+
+const LinearUnconstrainedErrorMessage = "Trying to evaluate linear constraints, but the problem does not have any."
+
+function check_linearly_constrained(nlp)
+  if nlp.meta.nlin == 0
+    throw(error(LinearUnconstrainedErrorMessage))
+  end
+end
+
 """
     coo_prod!(rows, cols, vals, v, Av)
 
