@@ -11,7 +11,7 @@ export jth_hess_coord, jth_hess_coord!, jth_hess
 export jth_hprod, jth_hprod!, ghjvprod, ghjvprod!
 export hess_structure!, hess_structure, hess_coord!, hess_coord
 export hess, hprod, hprod!, hess_op, hess_op!
-export tensor_projection
+export tensor_projection, tensor_projection!
 export varscale, lagscale, conscale
 
 """
@@ -1306,13 +1306,33 @@ Returns the projection of the n-th derivative of the objective of `nlp` at `x` a
 
 #### Input arguments
 
-- `nlp::AbstractNLPModel`: An NLP model;
-- `n::Int`: The order of the derivative to compute;
-- `x::AbstractVector`: The point at which the derivative is evaluated;
-- `directions::Tuple{Int, Vararg{Int}}`: A tuple of indices specifying the directions (e.g., `(1, 2)` for a tensor projection along the first and second axes);
+- `nlp`: An NLP model;
+- `n`: The order of the derivative to compute;
+- `x`: The point at which the derivative is evaluated;
+- `directions`: A tuple of indices specifying the directions (e.g., `(1, 2)` for a tensor projection along the first and second axes);
 - `args...`: A list of vectors, one for each direction specified in `directions`.
 """
-function tensor_projection end
+function tensor_projection(
+    nlp::AbstractNLPModel{T, S},
+    n::Int,
+    x::AbstractVector,
+    directions::Tuple{Int, Vararg{Int}},
+    args...
+) where {T, S}
+    @lencheck nlp.meta.nvar x
+    m = n - length(directions)
+    @assert m ≥ 1
+    dim = NTuple{m, Int}(nlp.meta.nvar for i = 1:m)
+    P = similar(x, dim)
+    return tensor_projection!(nlp, n, x, directions, P, args...)
+end
+
+"""
+    tensor_projection!(nlp, n, x, directions, P, args...)
+
+In-place version of the function [`tensor_projection`](@ref) where the result is stored in `P`.
+"""
+function tensor_projection! end
 
 function varscale end
 function lagscale end
