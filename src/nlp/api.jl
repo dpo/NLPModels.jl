@@ -1227,9 +1227,9 @@ function hess_op!(
   prod! = @closure (res, v, α, β) -> begin
     hprod!(nlp, x, v, Hv; obj_weight = obj_weight)
     if β == 0
-      @. res = α * Hv
+      res .= α .* Hv
     else
-      @. res = α * Hv + β * res
+      res .= α .* Hv .+ β .* res
     end
     return res
   end
@@ -1258,9 +1258,9 @@ function hess_op!(
   prod! = @closure (res, v, α, β) -> begin
     hprod!(nlp, rows, cols, vals, v, Hv)
     if β == 0
-      @. res = α * Hv
+      res .= α .* Hv
     else
-      @. res = α * Hv + β * res
+      res .= α .* Hv .+ β .* res
     end
     return res
   end
@@ -1289,9 +1289,9 @@ function hess_op!(
   prod! = @closure (res, v, α, β) -> begin
     hprod!(nlp, x, y, v, Hv; obj_weight = obj_weight)
     if β == 0
-      @. res = α * Hv
+      res .= α .* Hv
     else
-      @. res = α * Hv + β * res
+      res .= α .* Hv .+ β .* res
     end
     return res
   end
