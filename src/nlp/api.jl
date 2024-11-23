@@ -1316,11 +1316,11 @@ function tensor_projection(
     nlp::AbstractNLPModel{T, S},
     n::Int,
     x::AbstractVector,
-    directions::Tuple{Int, Vararg{Int}},
+    directions::Tuple{Int, N},
     args...
-) where {T, S}
+) where {T, S, N <: Integer}
     @lencheck nlp.meta.nvar x
-    m = n - length(directions)
+    m = n - N
     @assert m ≥ 1
     dim = NTuple{m, Int}(nlp.meta.nvar for i = 1:m)
     P = similar(x, dim)
